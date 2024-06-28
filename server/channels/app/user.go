@@ -896,6 +896,9 @@ func (a *App) AdjustImage(file io.Reader) (*bytes.Buffer, *model.AppError) {
 	if err != nil {
 		return nil, model.NewAppError("SetProfileImage", "api.user.upload_profile_user.decode.app_error", nil, "", http.StatusBadRequest).Wrap(err)
 	}
+	if seeker, ok := file.(io.ReadSeeker); ok {
+		seeker.Seek(0, 0)
+	}
 
 	orientation, _ := imaging.GetImageOrientation(file)
 	img = imaging.MakeImageUpright(img, orientation)
